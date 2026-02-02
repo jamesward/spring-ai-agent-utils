@@ -1,6 +1,7 @@
 package org.springaicommunity.agent;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.springaicommunity.agent.tools.AskUserQuestionTool;
@@ -71,8 +72,10 @@ public class Application {
 					ShellTools.builder().build(), // needed by the skills to execute scripts
 					FileSystemTools.builder().build(),// needed by the skills to read/write additional resources
 					SmartWebFetchTool.builder(chatClientBuilder.clone().build()).build(),
-					BraveWebSearchTool.builder(braveApiKey).resultCount(15).build(),				
+					BraveWebSearchTool.builder(braveApiKey).resultCount(15).build(),
 					GrepTool.builder().build())
+
+				.defaultToolContext(Map.of("foo", "bar"))
 
 				// Advisors
 				.defaultAdvisors(
@@ -81,12 +84,13 @@ public class Application {
 						.build(), // tool calling advisor
 					MessageChatMemoryAdvisor.builder(MessageWindowChatMemory.builder().maxMessages(500).build())
 						.order(Ordered.HIGHEST_PRECEDENCE + 1000)
-						.build())
-					// logging advisor	
-					// MyLoggingAdvisor.builder()
-					// 	.showAvailableTools(false)
-					// 	.showSystemMessage(false)
-					// 	.build()) 
+						.build(),
+					// logging advisor
+					 MyLoggingAdvisor.builder()
+					 	.showAvailableTools(false)
+					 	.showSystemMessage(false)
+					 	.build()
+				)
 				.build();
 				// @formatter:on
 
